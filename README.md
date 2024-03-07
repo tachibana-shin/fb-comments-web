@@ -82,7 +82,7 @@ declare class FBCommentPlugin {
     commentID: string,
     after_cursor?: string
   ): Promise<AsyncComments>
-  postCommentToMain(text: string): Promise<PostComment>
+  postComment(text: string): Promise<PostComment>
   replyComment(commentID: string, text: string): Promise<PostComment>
   likeComment(commentID: string, isLike: boolean): Promise<PostComment>
   editCommit(commentID: string, text: string): Promise<PostComment>

@@ -265,7 +265,7 @@ export class FBCommentPlugin {
       .then((data) => parseRT(data) as AsyncComments)
   }
 
-  async postCommentToMain(text: string): Promise<PostComment> {
+  async postComment(text: string): Promise<PostComment> {
     const setup = await this.setup()
 
     if (!setup.fb_dtsg) {
@@ -302,7 +302,7 @@ export class FBCommentPlugin {
       .fetch(
         `${
           this.#config.pluginUrl
-        }/comments/async/createComment/${targetID}}/?av=${__user}`,
+        }/comments/async/createComment/${targetID}/?av=${__user}`,
         {
           headers: setup.headers,
           method: "POST",

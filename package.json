@@ -1,0 +1,23 @@
+{
+  "name": "fb-comments-web",
+  "private": false,
+  "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
+  "devDependencies": {
+    "bumpp": "^9.2.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.2.2"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "typing": "tsc --noEmits",
+    "prepublish": "pnpm build",
+    "release": "bumpp package.json --commit --tags"
+  }
+}

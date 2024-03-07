@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsup",
     "typing": "tsc --noEmits",
-    "prepublish": "pnpm build",
+    "prepublish": "pnpm build && pnpm release",
     "release": "bumpp package.json --commit --tags"
   }
 }

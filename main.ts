@@ -22,6 +22,7 @@ export interface FBCommentPluginConfig {
       body: URLSearchParams
     }
   ) => Promise<string>
+  headersCustom?: Record<string, string>
 }
 export class FBCommentPlugin {
   static readonly default_config: Partial<FBCommentPluginConfig> = {
@@ -129,11 +130,13 @@ export class FBCommentPlugin {
       "sec-gpc": "1",
       "viewport-width": "727",
       "x-asbd-id": "129477",
-      "x-fb-lsd": "AVoje5w3t28",
+      "x-fb-lsd": lsd,
+      "origin": new URL(this.#config.pluginUrl).origin,
       // "cookie": "ps_n=0; datr=LU3cZSRNCYxxCm3eYkMh7iNr; sb=-NziZdme__APuhzWxH_97M-g; locale=vi_VN; wd=1366x708; c_user=100024588752208; xs=36%3AMZY_PwWr2vVraw%3A2%3A1709738073%3A-1%3A7867; fr=0boOOKHOSrwgP7dTy.AWX7fKQ_lLJsv4f1XDkgHzo3eYM.Bl4tz4..AAA.0.0.Bl6Iha.AWWUC1Wpi5s; SL_G_WPT_TO=vi",
       // "cookie": "ps_n=0; wd=1366x679; datr=LU3cZSRNCYxxCm3eYkMh7iNr; sb=-NziZdme__APuhzWxH_97M-g; fr=0boOOKHOSrwgP7dTy..Bl4tz4..AAA.0.0.Bl5zwq.AWU6WFSUyeM; SL_G_WPT_TO=vi",
       Referer: mainUrl,
-      "Referrer-Policy": "origin-when-cross-origin"
+      "Referrer-Policy": "origin-when-cross-origin",
+      ...this.#config.headersCustom
     }
 
     const data = {

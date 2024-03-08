@@ -1,6 +1,7 @@
 export interface User {
   type: "user"
   id: string
+  name: string
   thumbSrc: string
   uri: string
   isVerified: boolean
@@ -29,7 +30,7 @@ export interface Comment {
   canLike: boolean
   canEdit: boolean
   hidden: boolean
-  highlightedWords: never[]
+  highlightedWords: string[]
   reportURI: string
   spamCount: number
   canEmbed: boolean

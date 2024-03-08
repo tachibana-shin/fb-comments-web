@@ -47,7 +47,7 @@ export interface DefaultComments {
     targetFBID: string
     href: string
     userID: string
-    actorsOptIn: boolean[]
+    actorsOptIn: Record<string, boolean>
     actors: User[]
     totalCount: number
     afterCursor: string

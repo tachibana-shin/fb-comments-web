@@ -35,7 +35,7 @@ export interface Comment {
   spamCount: number
   canEmbed: boolean
   type: "comment"
-  public_replies?: { totalCount: 1; commentIDs: string[] }
+  public_replies?: { totalCount: number; commentIDs: string[]; afterCursor?: string }
 }
 
 export interface DefaultComments {

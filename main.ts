@@ -225,7 +225,6 @@ export class FBCommentPlugin {
       __req,
       __hs,
       dpr,
-      __ccg,
       __rev,
       __s,
       __hsi,
@@ -234,8 +233,11 @@ export class FBCommentPlugin {
       locale,
       lsd,
       jazoest,
-      __sp
+      __sp,
+      fb_dtsg
     } = setup
+
+    const __ccg = "MODERATE"
 
     return this.#config
       .fetch(
@@ -260,6 +262,7 @@ export class FBCommentPlugin {
             lsd,
             jazoest,
             __sp,
+            fb_dtsg,
             ...(after_cursor ? { after_cursor } : {})
           }),
           method: "POST"
@@ -467,7 +470,7 @@ export class FBCommentPlugin {
       .then((data) => parseRT(data) as PostComment)
   }
 
-  async editCommit(commentID: string, text: string): Promise<PostComment> {
+  async editComment(commentID: string, text: string): Promise<PostComment> {
     const setup = await this.setup()
 
     if (!setup.fb_dtsg) {

@@ -8,3 +8,4 @@ export interface PostComment {
   }
   __ar: number
 }
+

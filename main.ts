@@ -179,6 +179,27 @@ export class FBCommentPlugin {
 
     after_cursor ??= setup.comments.meta.afterCursor
 
+    const {
+      app_id,
+      limit,
+      __a,
+      __req,
+      __hs,
+      dpr,
+      __rev,
+      __s,
+      __hsi,
+      __dyn,
+      __csr,
+      locale,
+      lsd,
+      jazoest,
+      __sp,
+      fb_dtsg
+    } = setup
+
+    const __ccg = "GOOD"
+
     return this.#config
       .fetch(
         `${this.#config.pluginUrl}/comments/async/${setup.targetID}/pager/${
@@ -187,24 +208,25 @@ export class FBCommentPlugin {
         {
           headers: setup.headers,
           body: new URLSearchParams({
-            app_id: setup.app_id,
-            limit: setup.limit,
+            app_id,
+            limit,
             __user: setup.comments.meta.userID,
-            __a: setup.__a,
-            __req: "1",
-            __hs: setup.__hs,
-            dpr: setup.dpr,
-            __ccg: setup.__ccg,
-            __rev: setup.__rev,
-            __s: setup.__s,
-            __hsi: setup.__hsi,
-            __dyn: setup.__dyn,
-            __csr: setup.__csr,
-            locale: setup.locale,
-            lsd: setup.lsd,
-            jazoest: setup.jazoest,
-            __sp: setup.__sp,
-            after_cursor
+            __a,
+            __req,
+            __hs,
+            dpr,
+            __ccg,
+            __rev,
+            __s,
+            __hsi,
+            __dyn,
+            __csr,
+            locale,
+            lsd,
+            jazoest,
+            __sp,
+            fb_dtsg,
+            ...(after_cursor ? { after_cursor } : {})
           }),
           method: "POST"
         }

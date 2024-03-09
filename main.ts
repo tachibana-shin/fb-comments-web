@@ -5,11 +5,13 @@ import { PostComment } from "./types/PostComment.ts"
 import { RemoveComment } from "./types/RemoveComment.ts"
 
 export interface FBCommentPluginConfig {
+  app_id?: string
   href: string
   limit?: number
   locale: string
   order_by?: "time" | "reverse_time"
   pluginUrl?: string
+  dialogUrl?: string
   /** @description {string} url require starts with "https://" or "http://" */
   app: string // https://app.animevsub.eu.org
   sdk?: string
@@ -26,9 +28,11 @@ export interface FBCommentPluginConfig {
 }
 export class FBCommentPlugin {
   static readonly default_config: Partial<FBCommentPluginConfig> = {
+    app_id: "",
     limit: 10,
     order_by: "reverse_time",
     pluginUrl: "https://www.facebook.com/plugins",
+    dialogUrl: "https://www.facebook.com/dialog",
     sdk: "joey",
     version: "v15.0",
     fetch: (url, options) => fetch(url, options).then((res) => res.text())
@@ -48,7 +52,7 @@ export class FBCommentPlugin {
   private async _setup() {
     const url = `${this.#config.pluginUrl}/feedback.php`
     const queries = {
-      app_id: "",
+      app_id: this.#config.app_id,
       channel: `https://staticxx.facebook.com/x/connect/xd_arbiter/?version=46#cb=fc971c42bd70c0003&domain=${
         new URL(this.#config.app).hostname
       }&is_canvas=false&origin=https%3A%2F%2F${
@@ -131,7 +135,7 @@ export class FBCommentPlugin {
       "viewport-width": "727",
       "x-asbd-id": "129477",
       "x-fb-lsd": lsd,
-      "origin": new URL(this.#config.pluginUrl).origin,
+      origin: new URL(this.#config.pluginUrl).origin,
       // "cookie": "ps_n=0; datr=LU3cZSRNCYxxCm3eYkMh7iNr; sb=-NziZdme__APuhzWxH_97M-g; locale=vi_VN; wd=1366x708; c_user=100024588752208; xs=36%3AMZY_PwWr2vVraw%3A2%3A1709738073%3A-1%3A7867; fr=0boOOKHOSrwgP7dTy.AWX7fKQ_lLJsv4f1XDkgHzo3eYM.Bl4tz4..AAA.0.0.Bl6Iha.AWWUC1Wpi5s; SL_G_WPT_TO=vi",
       // "cookie": "ps_n=0; wd=1366x679; datr=LU3cZSRNCYxxCm3eYkMh7iNr; sb=-NziZdme__APuhzWxH_97M-g; fr=0boOOKHOSrwgP7dTy..Bl4tz4..AAA.0.0.Bl5zwq.AWU6WFSUyeM; SL_G_WPT_TO=vi",
       Referer: mainUrl,
@@ -174,6 +178,50 @@ export class FBCommentPlugin {
     return this.#setup_return
   }
 
+  signInPopup() {
+    return new Promise<void>((resolve, reject) => {
+      const queries = {
+        app_id: this.#config.app_id,
+        channel: `https://staticxx.facebook.com/x/connect/xd_arbiter/?version=46#cb=fc971c42bd70c0003&domain=${
+          new URL(this.#config.app).hostname
+        }&is_canvas=false&origin=https%3A%2F%2F${
+          this.#config.app
+        }%2Ffbaf0c74572724fba&relation=parent.parent`,
+        color_scheme: "light",
+        container_width: "973",
+        height: "100",
+        href: this.#config.href,
+        lazy: "false",
+        locale: this.#config.locale,
+        numposts: this.#config.limit + "",
+        order_by: this.#config.order_by,
+        sdk: this.#config.sdk,
+        version: this.#config.version,
+        width: ""
+      }
+      const popup = window.open(
+        `${this.#config.dialogUrl}/plugin.optin?app_id=${appId}&secure=true&social_plugin=comments&return_params=${encodeURIComponent(JSON.stringify(queries))}&login_params=${encodeURIComponent(JSON.stringify({ referrer: "" }))}&display=popup`,
+        "_blank",
+        "noopener,noreferrer,resizable"
+      )
+      popup!.opener = null
+
+      const popupTick = setInterval(() => {
+        if (!popup || popup.closed) {
+          clearTimeout(timeoutInterval)
+          resolve()
+        }
+      }, 500)
+      const timeoutInterval = setTimeout(
+        () => {
+          reject(new Error("Time out"))
+          clearInterval(popupTick)
+        },
+        5 * 60 * 1000
+      )
+    })
+  }
+
   async getComments(after_cursor?: string): Promise<AsyncComments> {
     const setup = await this.setup()
 
@@ -202,9 +250,7 @@ export class FBCommentPlugin {
 
     return this.#config
       .fetch(
-        `${this.#config.pluginUrl}/comments/async/${setup.targetID}/pager/${
-          this.#config.order_by
-        }/`,
+        `${this.#config.pluginUrl}/comments/async/${setup.targetID}/pager/${this.#config.order_by}/`,
         {
           headers: setup.headers,
           body: new URLSearchParams({
@@ -328,9 +374,7 @@ export class FBCommentPlugin {
 
     return this.#config
       .fetch(
-        `${
-          this.#config.pluginUrl
-        }/comments/async/createComment/${targetID}/?av=${__user}`,
+        `${this.#config.pluginUrl}/comments/async/createComment/${targetID}/?av=${__user}`,
         {
           headers: setup.headers,
           method: "POST",
@@ -397,9 +441,7 @@ export class FBCommentPlugin {
 
     return this.#config
       .fetch(
-        `${
-          this.#config.pluginUrl
-        }/comments/async/createReply/${commentID}/?av=${__user}`,
+        `${this.#config.pluginUrl}/comments/async/createReply/${commentID}/?av=${__user}`,
         {
           headers: setup.headers,
           method: "POST",
@@ -461,9 +503,7 @@ export class FBCommentPlugin {
 
     return this.#config
       .fetch(
-        `${
-          this.#config.pluginUrl
-        }/comments/async/like/?action_like=${isLike}&av=${__user}`,
+        `${this.#config.pluginUrl}/comments/async/like/?action_like=${isLike}&av=${__user}`,
         {
           headers: setup.headers,
           method: "POST",

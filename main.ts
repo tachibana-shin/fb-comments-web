@@ -181,7 +181,6 @@ export class FBCommentPlugin {
   signInPopup() {
     return new Promise<void>((resolve, reject) => {
       const queries = {
-        app_id: this.#config.app_id,
         channel: `https://staticxx.facebook.com/x/connect/xd_arbiter/?version=46#cb=fc971c42bd70c0003&domain=${
           new URL(this.#config.app).hostname
         }&is_canvas=false&origin=https%3A%2F%2F${
@@ -200,7 +199,7 @@ export class FBCommentPlugin {
         width: ""
       }
       const popup = window.open(
-        `${this.#config.dialogUrl}/plugin.optin?app_id=${appId}&secure=true&social_plugin=comments&return_params=${encodeURIComponent(JSON.stringify(queries))}&login_params=${encodeURIComponent(JSON.stringify({ referrer: "" }))}&display=popup`,
+        `${this.#config.dialogUrl}/plugin.optin?app_id=${this.#config.app_id}&secure=true&social_plugin=comments&return_params=${encodeURIComponent(JSON.stringify(queries))}&login_params=${encodeURIComponent(JSON.stringify({ referrer: "" }))}&display=popup`,
         "_blank",
         "noopener,noreferrer,resizable"
       )
